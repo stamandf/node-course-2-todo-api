@@ -1,3 +1,4 @@
+const {ObjectID} = require('mongodb');
 
 let express = require('express');
 let bodyParser = require('body-parser');
@@ -26,6 +27,34 @@ app.get('/todos', (req,res) => {
   }, (e) => {
     res.status(400).send(e);
   });
+});
+
+//Create the endpoint for id.
+//PUT
+// app.put('todos/:id',(req,res) => {
+//
+// });
+//GET /todos/1234455
+app.get('/todos/:id', (req, res) => {
+  // res.send(req.params);
+  let id = req.params.id;
+  // res.send('Hello!');
+  if(!ObjectID.isValid(id)) {
+    // console.log('Invalid ID.');
+    return res.status(404).send('Invalid ID.')
+  } else {
+    Todo.findById(id).then((todo) => {
+      if (!todo) {
+        // console.log('Todo not found.');
+        return res.status(404).send('Todo not found.')
+      }
+      // console.log('Todo By Id:', todo);
+      res.send({todo}); //send the object containing the todo
+    }).catch((e) => {
+      res.status(400).send(e);
+    });
+  }
+
 });
 app.listen(3000, () => {
   console.log('Started on port 3000');
