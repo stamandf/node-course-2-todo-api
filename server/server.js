@@ -64,12 +64,12 @@ app.delete('/todos/:id', (req, res) => {
   if(!ObjectID.isValid(id)) {
     return res.status(404).send('Invalid ID.')
   } else {
-    Todo.findByIdAndRemove(id).then((doc) => {
-      if (!doc) {
+    Todo.findByIdAndRemove(id).then((todo) => {
+      if (!todo) {
         // console.log('doc not found.');
-        return res.status(404).send('Doc not found.')
+        return res.status(404).send('Todo not found.')
       }
-      res.send({doc}); //send the object containing the todo
+      res.send({todo}); //send the object containing the todo
     }).catch((e) => {
       res.status(400).send(e);
     });

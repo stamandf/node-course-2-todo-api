@@ -91,12 +91,13 @@ describe('GET /todos/:id', () => {
     .expect(404)
     .end(done);
   });
+
   it('should return error message when id not found', (done) => {
     request(app)
     .get(`/todos/${_id.toHexString()}`)
     .expect('Todo not found.', done);
   });
-});
+
   it('should return 404 for non-Object ids', (done) => {
     request(app)
     .get(`/todos/${id}`)
@@ -109,4 +110,57 @@ describe('GET /todos/:id', () => {
     .get(`/todos/${id}`)
     .expect('Invalid ID.')
     .end(done);
+  });
+});
+
+  describe('DELETE /todos/:id', () => {
+    it('should remove a todo doc', (done) => {
+      let hexId = todos[0]._id.toHexString();
+      request(app)
+      .delete(`/todos/${hexId}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo._id).toBe(hexId);
+        })
+      .end((err,res) => {
+        if (err) {
+          return done(err);
+        }
+        Todo.findById(hexId).then((todo) => {
+          expect(todo).toBeFalsy();
+          done();
+        }).catch((e) => done(e));
+       });
+    });
+
+    it('should return 404 when todo does not exist', (done) => {
+      let hexId = '6b340113a8fc334298156abc';
+      request(app)
+      .delete(`/todos/${hexId}`)
+      .expect(404)
+      .end(done);
+    });
+
+    it('should return error message when id does not exist', (done) => {
+      let hexId = '6b340113a8fc334298156abc';
+      request(app)
+      .delete(`/todos/${hexId}`)
+      .expect('Todo not found.', done);
+    });
+
+    it('should return 404 for non-Object ids', (done) => {
+      let invalidID = '5b340113a8fc334298156abc11'
+      request(app)
+      .delete(`/todos/${invalidID}`)
+      .expect(404)
+      .end(done);
+    });
+
+    it('should return an error message for non-Object ids', (done) => {
+      let invalidID = '5b340113a8fc334298156abc11'
+      request(app)
+      .delete(`/todos/${invalidID}`)
+      .expect('Invalid ID.')
+      .end(done);
+    });
   });
