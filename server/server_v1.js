@@ -1,4 +1,10 @@
-require('./config/config');
+let env = process.env.NODE_ENV || 'development';
+
+if (env === 'development') {
+
+} else (env === 'test') {
+  
+}
 
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
