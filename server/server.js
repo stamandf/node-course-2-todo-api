@@ -104,14 +104,12 @@ app.patch('/todos/:id', (req,res) => {
   })
 });
 //Users
-
 app.post('/users', (req,res) => {  //create resources
   let body = _.pick(req.body, ['email', 'password']);
   let user = new User(body);
 
   user.save().then(() => {
     return user.generateAuthToken();
-    //res.send(user);
   }).then((token) => {
     res.header('x-auth', token).send(user);
   }).catch((e) => {
@@ -119,13 +117,11 @@ app.post('/users', (req,res) => {  //create resources
   })
 });
 
-// app.get('/users/me', authenticate, (req, res) => {
-//   res.send(req.user);
-// });
 
-app.get('/users/me', authenticate, (req, res) => {
-  res.send(req.user);
-})
+
+app.get('/users/me', authenticate, (req,res) => {
+    res.send(req.user);
+  });
 app.listen(port, () => {
   console.log(`Started up on port ${port}`);
 });
