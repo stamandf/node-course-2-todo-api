@@ -136,7 +136,7 @@ app.post('/users/login', (req,res) => {
     res.header('x-auth', token).send(user);
     });
   }).catch((e) => {
-    res.status(400).send(e);
+    res.status(400).send('Login or password incorrect.');
   });
 });
 module.exports = {app}
