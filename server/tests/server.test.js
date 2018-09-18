@@ -330,6 +330,7 @@ describe('GET /todos/:id', () => {
           .expect(400)
           .expect((res) => {
             expect(res.headers['x-auth']).toBeFalsy();
+            expect(res.text).toEqual('Login or password incorrect.');
           })
           .end((err, res) => {
             if (err) {
@@ -342,3 +343,46 @@ describe('GET /todos/:id', () => {
           });
         });
       });
+
+      describe('DELETE /users/me/token', () => {
+        it('should remove auth token on logout', (done) => {
+          request(app)
+            .delete('/users/me/token')
+            .set('x-auth', users[0].tokens[0].token)
+            .expect(200)
+            .end((err, res) => {
+              if (err) {
+                return done(err);
+              }
+              User.findById(users[0]._id).then((user) => {
+                expect(user.tokens.length).toBe(0);
+                done();
+              }).catch((e) => done(e));
+            });
+          });
+          it('should reject remove auth token after logout', (done) => {
+            request(app)
+              .delete('/users/me/token')
+              .set('x-auth', users[0].tokens[0].token)
+              .expect(200)
+              .end((err, res) => {
+                if (err) {
+                  return done(err);
+                }
+                User.findById(users[0]._id).then((user) => {
+                  expect(user.tokens.length).toBe(0);
+                  done();
+                }).catch((e) => done(e));
+
+                request(app)
+                .delete('/users/me/token')
+                .set('x-auth', users[0].tokens[0].token)
+                .expect(401)
+                .end((err, res) => {
+                  if (err) {
+                    return done(err);
+                  }
+                });
+              });
+          });
+        });
