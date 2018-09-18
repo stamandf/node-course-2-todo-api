@@ -53,6 +53,16 @@ UserSchema.methods.generateAuthToken = function () {
   })
 };
 
+UserSchema.methods.removeToken = function (token) {
+ let user = this;
+
+ return user.update({
+   $pull: {
+     tokens: {token}
+   }
+ });
+};
+
 UserSchema.statics.findByToken = function (token) { //statics is model instead of instance
   let User = this; //model methods gets refered by binding 'U'
   let decoded;
@@ -103,5 +113,6 @@ UserSchema.pre('save', function(next) {
   }
 });
 let User = mongoose.model('User', UserSchema);
+
 
 module.exports = {User};
