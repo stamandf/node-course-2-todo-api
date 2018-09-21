@@ -432,8 +432,10 @@ describe('GET /todos/:id', () => {
                   if (err) {
                     return done(err);
                   }
-                  
+
                 });
+
               });
           });
+
         });
